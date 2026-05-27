@@ -12,46 +12,60 @@ interface Props {
   brokenAtSeq: number;
 }
 
-const KIND_COLORS: Record<string, string> = {
-  answer: "bg-blue-100 text-blue-700 border-blue-200",
-  refusal: "bg-red-100 text-red-700 border-red-200",
-  trust: "bg-purple-100 text-purple-700 border-purple-200",
-  action: "bg-amber-100 text-amber-700 border-amber-200",
+const KIND_NODE: Record<string, string> = {
+  answer: "bg-emerald-500 border-emerald-600",
+  refusal: "bg-amber-500 border-amber-600",
+  trust: "bg-violet-500 border-violet-600",
+  action: "bg-blue-500 border-blue-600",
 };
 
-function truncate(s: string, max: number): string {
-  return s.length <= max ? s : s.slice(0, max - 1) + "…";
-}
+const KIND_CONNECTOR: Record<string, string> = {
+  answer: "bg-emerald-200",
+  refusal: "bg-amber-200",
+  trust: "bg-violet-200",
+  action: "bg-blue-200",
+};
 
 export function ReceiptTimeline({ receipts, brokenAtSeq }: Props) {
   const sorted = [...receipts].sort((a, b) => a.seq - b.seq);
 
   return (
     <div className="overflow-x-auto">
-      <div className="flex items-center gap-1 min-w-max px-2 py-2">
-        <span className="inline-flex items-center rounded-full border border-neutral-200 bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-500 whitespace-nowrap">
-          genesis
-        </span>
+      <div className="flex items-start min-w-max px-1 py-3 gap-0">
+        {/* Genesis */}
+        <div className="flex flex-col items-center gap-1">
+          <div className="w-2 h-2 rounded-sm bg-neutral-300 mt-0.5" title="genesis" />
+          <span className="text-[9px] text-neutral-400 font-medium">genesis</span>
+        </div>
 
         {sorted.map((r) => {
           const broken = r.seq === brokenAtSeq;
-          const color = broken
-            ? "bg-red-100 text-red-700 border-red-300"
-            : (KIND_COLORS[r.kind] ?? "bg-neutral-100 text-neutral-600 border-neutral-200");
+          const afterBroken = brokenAtSeq > 0 && r.seq > brokenAtSeq;
+          const nodeColor =
+            broken || afterBroken
+              ? "bg-red-500 border-red-600"
+              : KIND_NODE[r.kind] ?? "bg-neutral-400 border-neutral-500";
+          const connectorColor =
+            broken || afterBroken
+              ? "bg-red-200"
+              : KIND_CONNECTOR[r.kind] ?? "bg-neutral-200";
+
           return (
-            <div key={r.seq} className="flex items-center gap-1">
-              <span className="text-neutral-300 text-xs select-none">→</span>
-              <span
-                className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap cursor-default ${color}`}
-                title={r.prompt}
-              >
-                <span className="font-semibold mr-1">#{r.seq}</span>
-                <span className="mr-1">{r.kind}</span>
-                {r.prompt.trim().length > 0 && (
-                  <span className="opacity-60">· {truncate(r.prompt.trim(), 20)}</span>
-                )}
-                {broken && <span className="ml-1 font-bold">✗</span>}
-              </span>
+            <div key={r.seq} className="flex items-start">
+              {/* Connector */}
+              <div className={`w-6 h-px mt-[5px] ${connectorColor}`} />
+              {/* Node + label */}
+              <div className="flex flex-col items-center gap-1">
+                <div
+                  className={`w-3 h-3 rounded-full border-2 cursor-default ${nodeColor} ${broken ? "animate-pulse" : ""}`}
+                  title={`#${r.seq} ${r.kind} · ${r.prompt}`}
+                />
+                <span
+                  className={`text-[9px] font-medium ${broken || afterBroken ? "text-red-500" : "text-neutral-400"}`}
+                >
+                  #{r.seq}
+                </span>
+              </div>
             </div>
           );
         })}
