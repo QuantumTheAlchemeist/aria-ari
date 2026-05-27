@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
 import { AskPanel } from "@receipts/components/AskPanel";
-import { Ledger } from "@receipts/components/Ledger";
+import { TrustArchitect } from "@receipts/components/TrustArchitect";
 import { DecisionCards } from "@receipts/components/DecisionCards";
+import { Ledger } from "@receipts/components/Ledger";
 
 export default function ReceiptsPage() {
   const [k, setK] = useState(0);
@@ -27,6 +28,7 @@ export default function ReceiptsPage() {
       </header>
 
       <AskPanel onReceipt={bump} />
+      <TrustArchitect onReceipt={bump} />
       <DecisionCards onChange={bump} />
       <Ledger refreshKey={k} />
     </div>
