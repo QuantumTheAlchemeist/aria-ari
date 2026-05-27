@@ -61,14 +61,20 @@ export function Ledger({ refreshKey }: { refreshKey: number }) {
 
   const tamper = async () => {
     setActionError("");
+    // Target the second receipt (seq 1) if it exists, otherwise tamper seq 0.
+    // This keeps the origin receipt intact when more receipts are available.
+    const receipts = data?.receipts ?? [];
+    const target = receipts.length > 1 ? receipts[1].seq : (receipts[0]?.seq ?? 0);
     try {
       const r = await fetch(`${API_BASE}/tamper`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ seq: 1 }),
+        body: JSON.stringify({ seq: target }),
       });
-      if (!r.ok) setActionError("Tamper failed");
-      else load();
+      if (!r.ok) {
+        const msg = await r.json().catch(() => ({}));
+        setActionError((msg as { error?: string }).error ?? "Tamper failed");
+      } else load();
     } catch {
       setActionError("Network error during tamper");
     }

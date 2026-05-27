@@ -123,9 +123,7 @@ export function ModuleScanner({ onUseScan }: { onUseScan: (scan: ModuleRiskScan)
             <span className={`rounded px-2 py-0.5 text-xs font-bold uppercase ${RISK_BADGE[scan.riskLevel]}`}>
               {scan.riskLevel} risk
             </span>
-            {"score" in scan && (
-              <span className="text-xs opacity-60 font-mono">score: {(scan as { score: number }).score}</span>
-            )}
+            <span className="text-xs opacity-60 font-mono">score: {scan.score}</span>
             {scan.permissions.map((p) => (
               <span key={p} className="text-xs opacity-70">
                 {PERM_ICON[p] ?? "⚙"} {p}

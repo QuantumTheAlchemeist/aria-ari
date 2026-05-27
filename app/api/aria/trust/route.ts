@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     const prompt = `Cleo trust review: ${input.moduleName} workflow=${input.workflow} reads=${input.reads.join("|")} actions=${input.actions.join("|")} bottlenecks=${input.bottlenecks.join("|")}`;
 
     const sealed = sealReceipt(
-      buildContent({ seq, kind: "trust", prompt, output, citation_ids: [], decision: "draft", created_at: new Date().toISOString() }),
+      buildContent({ seq, kind: "trust", prompt, output, citation_ids: [], decision: "sealed", created_at: new Date().toISOString() }),
       prev
     );
     await db.insert(receiptsLedger).values(toRow(sealed, userId));

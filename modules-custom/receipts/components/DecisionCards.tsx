@@ -98,7 +98,8 @@ export function DecisionCards({ onChange }: { onChange: () => void }) {
 
   return (
     <div className="rounded-xl border bg-white p-4 space-y-3 shadow-sm">
-      <h3 className="font-semibold text-sm">Ask the assistant to act</h3>
+      <h3 className="font-semibold text-sm">Consequence Engine</h3>
+      <p className="text-xs text-neutral-500 -mt-1">Every proposed action is classified act / draft / refuse before execution.</p>
       <div className="flex flex-wrap gap-2">
         {DEMOS.map((x) => (
           <button
