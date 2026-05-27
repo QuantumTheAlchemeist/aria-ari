@@ -1,24 +1,54 @@
 # ARIA — Trust Studio for ARI
 
+**Live:** https://aria-ari.vercel.app
+
 > **ARI lets anyone build AI modules. ARIA makes those modules safe to trust.**
 
 ARIA is a custom ARI module that gives every ARI module a trust contract. It scans modules for risk, walks the builder through a Cleo-grade trust architecture, enforces grounded answers and gated actions, and proves every interaction with a tamper-evident hash-chained receipt ledger.
 
 ---
 
-## 90-second review path
+## Judge testing (live — no setup required)
+
+Open **https://aria-ari.vercel.app/aria** — the app runs on Cloud SQL Postgres; no local setup needed.
+
+```
+Step 1 — Seed the knowledge base
+  → In "Knowledge Base", click "Load sample knowledge base →"
+    (prominent green button when empty)
+
+Step 2 — Scan a module for risk
+  → In "Module Risk Scanner", click "Project Memory Copilot" preset
+  → Click "Scan module"  →  CRITICAL risk badge + breakdown appears
+
+Step 3 — Design a trust contract
+  → Click "Send to Trust Architect"
+  → Walk all 8 stages; click "Seal trust receipt" on the final stage
+  → A trust receipt appears in the ledger below
+
+Step 4 — Simulate policy enforcement
+  → In "Policy Simulator", click "Delete 60 notes"  →  see ✗ Refuse
+  → Click "Summarize notes"  →  see ✓ Act
+
+Step 5 — Ask grounded and ungrounded questions
+  → In "Ask ARIA", type: Who is leading the billing rewrite?
+    → cited answer with [1][2] source markers
+  → Ask: What is our Mars launch budget?
+    → ✗ Refusal (not in knowledge base — no hallucination)
+
+Step 6 — Prove tamper-evidence
+  → In "Receipt Ledger", verify the chain shows ✓ Verified
+  → Click "Simulate edit →" under Integrity Proof
+    → Chain breaks; exact tampered row is flagged red
+  → Click "Restore chain →"  →  chain heals back to ✓ Verified
+```
+
+## 90-second local review path
 
 ```
 1. npm install && npm run dev
 2. Open http://localhost:3000/aria
-3. Click "Seed demo"
-4. Click preset "Project Memory Copilot" → Scan module  (CRITICAL risk badge appears)
-5. Click "Send to Trust Architect" → walk 8 stages → click "Seal trust receipt"
-6. Click "Simulate policy" → try "Delete 60 notes" → see refuse
-7. Ask "Who is leading the billing rewrite?" → cited answer with [1][2]
-8. Ask "What is our Mars launch budget?" → refusal (no hallucination)
-9. Click Verify → green ✓
-10. Click Tamper → Verify → red ✗ with broken row flagged
+3. Follow steps 1–6 above
 ```
 
 ---
