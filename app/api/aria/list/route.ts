@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     const receipts = rows.map(fromRow);
     return NextResponse.json({ receipts, verify: verifyChain(receipts) });
   } catch (err) {
-    console.error("[receipts/list]", err);
+    console.error("[aria/list]", err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }

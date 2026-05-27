@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
       evaluateConsequence({ ...parsed.data, toolInput: parsed.data.toolInput as Record<string, unknown>, userId })
     );
   } catch (err) {
-    console.error("[receipts/action POST]", err);
+    console.error("[aria/action POST]", err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }
@@ -91,7 +91,7 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json({ ok: true, receipt: sealed });
   } catch (err) {
-    console.error("[receipts/action PUT]", err);
+    console.error("[aria/action PUT]", err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }

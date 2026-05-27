@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ policy: output, receipt: sealed });
   } catch (err) {
-    console.error("[receipts/trust]", err);
+    console.error("[aria/trust]", err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }

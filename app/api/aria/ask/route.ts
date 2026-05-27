@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ result, receipt: sealed });
   } catch (err) {
-    console.error("[receipts/ask]", err);
+    console.error("[aria/ask]", err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }

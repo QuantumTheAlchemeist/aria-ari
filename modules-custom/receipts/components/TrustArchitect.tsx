@@ -75,9 +75,9 @@ export function TrustArchitect({ onReceipt }: { onReceipt: () => void }) {
   return (
     <div className="rounded-xl border p-4 space-y-4">
       <div>
-        <h3 className="font-semibold">Cleo Trust Architect</h3>
+        <h3 className="font-semibold">ARIA Trust Architect</h3>
         <p className="text-sm text-neutral-500">
-          A staged Cleo walkthrough for ARI modules: design the stack, review each trust layer, then seal the policy.
+          Design the trust stack for any ARI module — layer by layer — then seal the policy as a verifiable receipt.
         </p>
       </div>
 

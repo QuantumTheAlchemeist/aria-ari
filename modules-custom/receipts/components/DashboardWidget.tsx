@@ -23,10 +23,10 @@ export function DashboardWidget() {
 
   return (
     <a
-      href="/receipts"
+      href="/aria"
       className="block rounded-xl border bg-white p-4 hover:shadow-md transition-shadow"
     >
-      <div className="text-sm font-semibold text-neutral-700">Receipts</div>
+      <div className="text-sm font-semibold text-neutral-700">ARIA</div>
       <div
         className={`mt-1 text-2xl font-bold ${
           v?.ok ? "text-emerald-600" : v ? "text-red-600" : "text-neutral-400"

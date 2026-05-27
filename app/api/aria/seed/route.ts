@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, seeded: SOURCES.length });
   } catch (err) {
-    console.error("[receipts/seed]", err);
+    console.error("[aria/seed]", err);
     return NextResponse.json(
       { ok: false, error: "Seed failed. Check DATABASE_URL and run db:push." },
       { status: 500 }

@@ -5,7 +5,7 @@ import { TrustArchitect } from "@receipts/components/TrustArchitect";
 import { DecisionCards } from "@receipts/components/DecisionCards";
 import { Ledger } from "@receipts/components/Ledger";
 
-export default function ReceiptsPage() {
+export default function AriaPage() {
   const [k, setK] = useState(0);
   const bump = () => setK((x) => x + 1);
 
@@ -13,17 +13,17 @@ export default function ReceiptsPage() {
     <div className="mx-auto max-w-3xl space-y-5 p-6">
       <header className="space-y-1">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold">Receipts</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">ARIA</h1>
+          <span className="text-xs text-neutral-400 font-medium">ARI's Trust Layer</span>
           <a
             href="/"
-            className="text-xs text-neutral-400 hover:text-neutral-600 transition-colors"
+            className="ml-auto text-xs text-neutral-400 hover:text-neutral-600 transition-colors"
           >
             ← Dashboard
           </a>
         </div>
         <p className="text-sm text-neutral-500">
-          Every answer cites its sources. Every action needs consent. Every
-          interaction is a tamper-evident receipt.
+          Cited answers. Gated actions. Every interaction is a tamper-evident receipt.
         </p>
       </header>
 

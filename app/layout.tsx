@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Receipts — Verifiable AI for ARI",
+  title: "ARIA — ARI's Trust Layer",
   description:
-    "Every answer cites its sources. Every action needs consent. Every interaction is a tamper-evident receipt.",
+    "Cited answers. Gated actions. Tamper-evident receipts. ARIA makes ARI's AI safe to trust.",
 };
 
 export default function RootLayout({

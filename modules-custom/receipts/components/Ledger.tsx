@@ -66,7 +66,7 @@ export function Ledger({ refreshKey }: { refreshKey: number }) {
   return (
     <div className="rounded-xl border bg-white p-4 space-y-3 shadow-sm">
       <div className="flex items-center gap-2">
-        <h3 className="font-semibold text-sm">Receipts Ledger</h3>
+        <h3 className="font-semibold text-sm">ARIA Ledger</h3>
         {loading && (
           <span className="text-xs text-neutral-400">Loading…</span>
         )}

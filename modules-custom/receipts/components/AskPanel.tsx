@@ -55,7 +55,7 @@ export function AskPanel({ onReceipt }: { onReceipt: () => void }) {
       <div className="flex gap-2">
         <input
           className="flex-1 rounded-md border px-3 py-2 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-          placeholder="Ask your notes…"
+          placeholder="Ask ARIA about your notes…"
           value={q}
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && ask()}

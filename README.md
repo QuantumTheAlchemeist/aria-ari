@@ -1,10 +1,12 @@
-# Receipts — a verifiable trust layer for ARI's AI
+# ARIA — ARI's Trust Layer
 
-Receipts is a Trust Studio for ARI modules. It ports the full org-brain Cleo walkthrough
+ARIA is a Trust Studio built for ARI. It ports the full org-brain Cleo walkthrough
 pattern into ARI: picker, stack overview, one trust layer at a time, diagrams, Continue
 controls, and a final module policy receipt. Then it makes ARI's AI verifiable: every
 answer is grounded in cited sources or refused, every risky action is gated by a consequence
 preview + approval, and every interaction is sealed into a hash-chained, tamper-evident ledger.
+
+> **ARI builds modules fast. ARIA makes them safe to trust.**
 
 ## Quick start
 
@@ -16,14 +18,14 @@ npm run db:push   # creates receipts_sources + receipts_ledger tables
 npm run dev
 ```
 
-Open `http://localhost:3000/receipts`.
+Open `http://localhost:3000/aria`.
 
 ## Demo (90 seconds)
 
 1. Click **Seed demo** — loads 5 seed notes + the Vineyard Block A origin story.
 2. Ask **"Who is leading the billing rewrite?"** → cited answer with `[1][2]`.
 3. Ask something off-corpus → **refusal** (no hallucination).
-4. Use **Cleo Trust Architect** → picker → stack overview → data/action/approval/ledger stages → final policy → **Seal trust receipt** for "Project Memory Copilot".
+4. Use **ARIA Trust Architect** → picker → stack overview → data/action/approval/ledger stages → final policy → **Seal trust receipt** for "Project Memory Copilot".
 5. Click **Email 15 teammates** → `draft · typed` (high blast radius).
 6. Click **Delete 60 notes** → `refuse` (exceeds 50-item safety ceiling).
 7. Click **Verify** → all green ✓.
@@ -32,10 +34,10 @@ Open `http://localhost:3000/receipts`.
 
 ## How it works
 
-**Cleo Trust Architect**
-A full staged Cleo walkthrough for ARI modules: picker, stack overview, one trust layer at a
+**ARIA Trust Architect**
+A full staged walkthrough for ARI modules: picker, stack overview, one trust layer at a
 time, diagrams, Continue controls, and a final policy that seals into the ledger as a `trust`
-receipt. ARI creates modules fast — Receipts gives those modules a trust contract.
+receipt. ARI creates modules fast — ARIA gives those modules a trust contract.
 
 **Cited answers & refusals**
 Deterministic keyword retrieval over your notes. Answers cite `[n]` markers. Queries
@@ -63,8 +65,8 @@ any edit, removal, or reorder breaks the chain and pinpoints the altered entry.
 The consequence-engine, citation-first architect, and hash-chained-ledger patterns are
 **adapted from the authors' production systems** (a farm-operations action-guardrail engine,
 a citation-first institutional AI architect, and a carbon-MRV audit-anchor ledger). The ARI
-module integration, cited-answer/refusal flow, verifier, Trust Architect, gated-action route,
-and all UI were built during ARI.HACK.
+module integration, cited-answer/refusal flow, verifier, ARIA Trust Architect, gated-action
+route, and all UI were built during ARI.HACK.
 MIT licensed; fully open source.
 
 ## License

@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, tamperedSeq: seq });
   } catch (err) {
-    console.error("[receipts/tamper]", err);
+    console.error("[aria/tamper]", err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }
