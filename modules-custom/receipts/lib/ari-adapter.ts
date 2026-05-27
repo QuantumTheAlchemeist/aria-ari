@@ -31,11 +31,30 @@ export function getDb(): PostgresJsDatabase<typeof schema> {
 }
 
 // ---- CURRENT USER ----
-// Replace this body with the real auth/session resolution once ARI is wired.
-// DEMO FALLBACK: a fixed user UUID so the whole demo works without auth.
-// If RLS blocks inserts with this uid, run:
-//   ALTER TABLE receipts_sources DISABLE ROW LEVEL SECURITY;
-//   ALTER TABLE receipts_ledger  DISABLE ROW LEVEL SECURITY;
-export async function getUserId(_req: Request): Promise<string> {
-  return "00000000-0000-0000-0000-000000000001";
+// ARI injects x-ari-user-id on every proxied request; same-origin shell may
+// set an ari_session cookie instead.
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export async function getUserId(req: Request): Promise<string> {
+  const r = req as import("next/server").NextRequest;
+
+  // ARI host injects x-ari-user-id on every internal request
+  const fromHeader = r.headers.get("x-ari-user-id");
+  if (fromHeader && UUID_RE.test(fromHeader)) {
+    return fromHeader;
+  }
+
+  // Same-origin ARI shell may set ari_session cookie
+  const fromCookie = r.cookies?.get?.("ari_session")?.value;
+  if (fromCookie && UUID_RE.test(fromCookie)) {
+    return fromCookie;
+  }
+
+  // Dev fallback — only active when DATABASE_URL and NODE_ENV suggest local dev
+  if (process.env.NODE_ENV !== "production") {
+    return "00000000-0000-0000-0000-000000000001";
+  }
+
+  throw new Error("Unauthorized: no ARI session");
 }

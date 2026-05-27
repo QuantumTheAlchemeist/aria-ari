@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { AskPanel } from "@receipts/components/AskPanel";
+import { SourcesPanel } from "@receipts/components/SourcesPanel";
 import { ModuleScanner } from "@receipts/components/ModuleScanner";
 import { TrustArchitect } from "@receipts/components/TrustArchitect";
 import { PolicySimulator } from "@receipts/components/PolicySimulator";
@@ -32,6 +33,7 @@ export default function AriaPage() {
       </header>
 
       <AskPanel onReceipt={bump} />
+      <SourcesPanel />
       <ModuleScanner onUseScan={setScannedModule} />
       <TrustArchitect scannedModule={scannedModule} onReceipt={bump} />
       <PolicySimulator scannedModule={scannedModule} />

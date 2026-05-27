@@ -80,20 +80,6 @@ const escalate = (a: ConfirmationTier, b: ConfirmationTier): ConfirmationTier =>
 
 const TOKEN_TTL_MS = 5 * 60 * 1000;
 
-// In-process single-use token registry — prevents replay within the same process.
-// Keys are token strings; values are expiry timestamps for periodic cleanup.
-const usedTokens = new Map<string, number>();
-function consumeToken(token: string, exp: number): boolean {
-  if (usedTokens.has(token)) return false;
-  usedTokens.set(token, exp);
-  // Evict expired entries to prevent unbounded growth.
-  if (usedTokens.size > 1000) {
-    const now = Date.now();
-    for (const [k, e] of usedTokens) if (e < now) usedTokens.delete(k);
-  }
-  return true;
-}
-
 const secret = () =>
   process.env.RECEIPTS_HMAC_SECRET &&
   process.env.RECEIPTS_HMAC_SECRET.length >= 16
@@ -143,8 +129,6 @@ export function verifyToken(token: string): TokenPayload | null {
     return null;
   }
 }
-
-export { consumeToken };
 
 export function evaluateConsequence(ctx: ConsequenceContext): ConsequenceDecision {
   const profile = PROFILES[ctx.toolName] ?? unknownProfile(ctx.toolName);

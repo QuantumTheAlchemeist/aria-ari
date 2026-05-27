@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, lt } from "drizzle-orm";
 import { z } from "zod";
 import { getDb, getUserId } from "@receipts/lib/ari-adapter";
-import { receiptsLedger } from "@receipts/database/schema";
+import { receiptsLedger, receiptsUsedTokens } from "@receipts/database/schema";
 import {
   evaluateConsequence,
   verifyToken,
-  consumeToken,
 } from "@receipts/lib/consequence";
 import {
   buildContent,
@@ -64,12 +63,30 @@ export async function PUT(req: NextRequest) {
         { status: 400 }
       );
     }
-    if (!consumeToken(token, payload.exp)) {
+    const tokenHash = sha256Hex(token);
+    const [existing] = await db
+      .select({ tokenHash: receiptsUsedTokens.tokenHash })
+      .from(receiptsUsedTokens)
+      .where(eq(receiptsUsedTokens.tokenHash, tokenHash));
+
+    if (existing) {
       return NextResponse.json(
         { ok: false, error: "Token already used — submit a new approval" },
         { status: 400 }
       );
     }
+
+    await db.insert(receiptsUsedTokens).values({
+      tokenHash,
+      userId,
+      toolName,
+      expiresAt: new Date(payload.exp),
+    });
+
+    // Also clean up expired tokens periodically (best-effort, don't await)
+    db.delete(receiptsUsedTokens)
+      .where(lt(receiptsUsedTokens.expiresAt, new Date()))
+      .catch(() => {});
 
     const ledger = await db
       .select()

@@ -32,7 +32,6 @@ const KIND_COLOR: Record<string, string> = {
 export function Ledger({ refreshKey }: { refreshKey: number }) {
   const [data, setData] = useState<ListResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const [actionError, setActionError] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -48,37 +47,6 @@ export function Ledger({ refreshKey }: { refreshKey: number }) {
     load();
   }, [refreshKey, load]);
 
-  const seed = async () => {
-    setActionError("");
-    try {
-      const r = await fetch(`${API_BASE}/seed`, { method: "POST" });
-      if (!r.ok) setActionError("Seed failed");
-      else load();
-    } catch {
-      setActionError("Network error during seed");
-    }
-  };
-
-  const tamper = async () => {
-    setActionError("");
-    // Target the second receipt (seq 1) if it exists, otherwise tamper seq 0.
-    // This keeps the origin receipt intact when more receipts are available.
-    const receipts = data?.receipts ?? [];
-    const target = receipts.length > 1 ? receipts[1].seq : (receipts[0]?.seq ?? 0);
-    try {
-      const r = await fetch(`${API_BASE}/tamper`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ seq: target }),
-      });
-      if (!r.ok) {
-        const msg = await r.json().catch(() => ({}));
-        setActionError((msg as { error?: string }).error ?? "Tamper failed");
-      } else load();
-    } catch {
-      setActionError("Network error during tamper");
-    }
-  };
 
   const verify = data?.verify;
   const broken = verify && !verify.ok ? verify.brokenAtSeq : -1;
@@ -113,34 +81,18 @@ export function Ledger({ refreshKey }: { refreshKey: number }) {
         </p>
       )}
 
-      {actionError && (
-        <p className="text-xs text-red-600 bg-red-50 rounded p-2">{actionError}</p>
-      )}
-
-      <div className="flex gap-2 flex-wrap">
-        <button
-          className="rounded-md border px-3 py-1 text-xs font-medium hover:bg-neutral-50 transition-colors"
-          onClick={seed}
-        >
-          Seed demo
-        </button>
+<div className="flex gap-2 flex-wrap">
         <button
           className="rounded-md border px-3 py-1 text-xs font-medium hover:bg-neutral-50 transition-colors"
           onClick={load}
         >
           Verify
         </button>
-        <button
-          className="rounded-md border border-red-300 px-3 py-1 text-xs font-medium text-red-700 hover:bg-red-50 transition-colors"
-          onClick={tamper}
-        >
-          Tamper (demo)
-        </button>
       </div>
 
       {data?.receipts.length === 0 && (
         <p className="text-sm text-neutral-400 py-2">
-          No receipts yet. Click &quot;Seed demo&quot; then ask a question.
+          No receipts yet. Add sources above, then ask a question.
         </p>
       )}
 

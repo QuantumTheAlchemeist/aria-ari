@@ -30,3 +30,10 @@ export const receiptsLedger = pgTable("receipts_ledger", {
   // stored as ISO-8601 text so the exact string used when sealing is preserved
   createdAt: text("created_at").notNull(),
 });
+
+export const receiptsUsedTokens = pgTable("receipts_used_tokens", {
+  tokenHash: text("token_hash").primaryKey(),
+  userId: uuid("user_id").notNull(),
+  toolName: text("tool_name").notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+});
