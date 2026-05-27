@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
-import { scenariosForScan, type SimScenario, type SimResult } from "@receipts/lib/policy-sim";
+import {
+  scenariosForScan,
+  type SimScenario,
+  type SimResult,
+} from "@receipts/lib/policy-sim";
 import type { ModuleRiskScan } from "@receipts/lib/module-scan";
 import { API_BASE } from "../lib/api-base";
-
-// ---- colour maps ----------------------------------------------------------------
 
 const DECISION_BADGE: Record<string, string> = {
   act: "bg-emerald-100 text-emerald-800",
@@ -13,9 +15,9 @@ const DECISION_BADGE: Record<string, string> = {
 };
 
 const DECISION_BORDER: Record<string, string> = {
-  act: "border-emerald-200 bg-emerald-50",
-  draft: "border-amber-200 bg-amber-50",
-  refuse: "border-red-200 bg-red-50",
+  act: "border-l-4 border-l-emerald-500",
+  draft: "border-l-4 border-l-amber-500",
+  refuse: "border-l-4 border-l-red-500",
 };
 
 function decisionLabel(result: SimResult): string {
@@ -23,8 +25,6 @@ function decisionLabel(result: SimResult): string {
   if (result.decision.decision === "refuse") return "✗ Refuse";
   return `⏸ Draft · ${result.decision.tier}`;
 }
-
-// ---- scenario chip --------------------------------------------------------------
 
 function ScenarioChip({
   scenario,
@@ -43,8 +43,7 @@ function ScenarioChip({
       disabled={loading}
       title={scenario.description}
       className={[
-        "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-        "disabled:opacity-50",
+        "rounded-full border px-3 py-1 text-xs font-medium transition-colors disabled:opacity-50",
         selected
           ? "bg-neutral-900 text-white border-neutral-900"
           : "bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-50 hover:border-neutral-400",
@@ -55,39 +54,42 @@ function ScenarioChip({
   );
 }
 
-// ---- result card ----------------------------------------------------------------
-
 function ResultCard({ result }: { result: SimResult }) {
   const d = result.decision.decision;
   return (
-    <div className={`rounded-lg border p-3 space-y-2 ${DECISION_BORDER[d] ?? "border-neutral-200 bg-neutral-50"}`}>
-      {/* header row */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className={`rounded px-2 py-0.5 text-xs font-bold uppercase ${DECISION_BADGE[d] ?? ""}`}>
-          {decisionLabel(result)}
-        </span>
-        <span className="text-xs font-medium text-neutral-700 truncate">
-          {result.scenario.label}
-        </span>
+    <div
+      className={`rounded-lg border border-neutral-200 bg-white overflow-hidden ${
+        DECISION_BORDER[d] ?? "border-l-4 border-l-neutral-400"
+      }`}
+    >
+      <div className="p-3 space-y-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span
+            className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${
+              DECISION_BADGE[d] ?? ""
+            }`}
+          >
+            {decisionLabel(result)}
+          </span>
+          <span className="text-xs font-medium text-neutral-700 truncate">
+            {result.scenario.label}
+          </span>
+        </div>
+        <p className="text-xs text-neutral-700 leading-relaxed">
+          {result.decision.reason}
+        </p>
+        <code className="inline-block bg-neutral-100 rounded px-2 py-0.5 font-mono text-[11px] text-neutral-600">
+          {result.policyLine}
+        </code>
+        {result.decision.preview && (
+          <p className="text-xs text-neutral-500 italic">
+            {result.decision.preview}
+          </p>
+        )}
       </div>
-
-      {/* reason */}
-      <p className="text-xs text-neutral-700 leading-relaxed">{result.decision.reason}</p>
-
-      {/* policy line */}
-      <pre className="text-[11px] rounded bg-white/70 border border-neutral-200 px-2 py-1 text-neutral-500 font-mono whitespace-pre-wrap">
-        {result.policyLine}
-      </pre>
-
-      {/* preview */}
-      {result.decision.preview && (
-        <p className="text-xs text-neutral-500 italic">{result.decision.preview}</p>
-      )}
     </div>
   );
 }
-
-// ---- main component -------------------------------------------------------------
 
 interface PolicySimulatorProps {
   scannedModule: ModuleRiskScan | null;
@@ -101,12 +103,20 @@ export function PolicySimulator({ scannedModule }: PolicySimulatorProps) {
 
   if (!scannedModule) {
     return (
-      <div className="rounded-xl border bg-white p-4 shadow-sm">
-        <h3 className="font-semibold text-sm">Policy Simulator</h3>
-        <p className="mt-1 text-xs text-neutral-400">
-          Scan a module first — the simulator will show how ARIA's policy engine would respond to
-          requests from it.
-        </p>
+      <div className="rounded-xl border border-neutral-200 bg-white shadow-sm">
+        <div className="px-4 pt-4 pb-3 border-b border-neutral-100">
+          <p className="text-xs font-medium uppercase tracking-widest text-neutral-400">
+            Policy Simulator
+          </p>
+        </div>
+        <div className="p-8 flex flex-col items-center gap-2 text-center">
+          <span className="text-2xl">🔬</span>
+          <p className="text-sm font-medium text-neutral-500">No module loaded</p>
+          <p className="text-xs text-neutral-400 max-w-xs">
+            Scan a module above — the simulator will show how ARIA&apos;s policy
+            engine responds to requests from it.
+          </p>
+        </div>
       </div>
     );
   }
@@ -116,12 +126,7 @@ export function PolicySimulator({ scannedModule }: PolicySimulatorProps) {
   async function runScenario(scenario: SimScenario) {
     setSelectedId(scenario.id);
     setError("");
-
-    if (results[scenario.id]) {
-      // already fetched — just show it
-      return;
-    }
-
+    if (results[scenario.id]) return;
     setLoadingId(scenario.id);
     try {
       const res = await fetch(`${API_BASE}/simulate`, {
@@ -145,38 +150,36 @@ export function PolicySimulator({ scannedModule }: PolicySimulatorProps) {
   const activeResult = selectedId ? results[selectedId] : null;
 
   return (
-    <div className="rounded-xl border bg-white p-4 space-y-4 shadow-sm">
-      {/* header */}
-      <div>
-        <h3 className="font-semibold text-sm">Policy Simulator</h3>
+    <div className="rounded-xl border border-neutral-200 bg-white shadow-sm">
+      <div className="px-4 pt-4 pb-3 border-b border-neutral-100">
+        <p className="text-xs font-medium uppercase tracking-widest text-neutral-400">
+          Policy Simulator
+        </p>
         <p className="text-xs text-neutral-500 mt-0.5">
-          See how ARIA&apos;s policy engine responds to requests from this module — before trusting it.
+          See how ARIA&apos;s policy engine responds to requests from this module
+          — before trusting it.
         </p>
       </div>
-
-      {/* scenario chips */}
-      <div className="flex flex-wrap gap-2">
-        {scenarios.map((s) => (
-          <ScenarioChip
-            key={s.id}
-            scenario={s}
-            selected={selectedId === s.id}
-            loading={loadingId === s.id}
-            onClick={() => runScenario(s)}
-          />
-        ))}
+      <div className="p-4 space-y-4">
+        <div className="flex flex-wrap gap-2">
+          {scenarios.map((s) => (
+            <ScenarioChip
+              key={s.id}
+              scenario={s}
+              selected={selectedId === s.id}
+              loading={loadingId === s.id}
+              onClick={() => runScenario(s)}
+            />
+          ))}
+        </div>
+        {error && <p className="text-xs text-red-600">{error}</p>}
+        {activeResult && <ResultCard result={activeResult} />}
+        {loadingId && !results[loadingId] && (
+          <p className="text-xs text-neutral-400 animate-pulse">
+            Simulating…
+          </p>
+        )}
       </div>
-
-      {/* error */}
-      {error && <p className="text-xs text-red-600">{error}</p>}
-
-      {/* result */}
-      {activeResult && <ResultCard result={activeResult} />}
-
-      {/* loading state with no cached result yet */}
-      {loadingId && !results[loadingId] && (
-        <p className="text-xs text-neutral-400 animate-pulse">Simulating…</p>
-      )}
     </div>
   );
 }
