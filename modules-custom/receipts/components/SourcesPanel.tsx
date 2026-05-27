@@ -150,11 +150,21 @@ export function SourcesPanel() {
         </p>
       )}
 
-      {/* Source list */}
+      {/* Empty state — prominent CTA for first-run */}
       {!loading && sources.length === 0 && !fetchError && (
-        <p className="text-xs text-neutral-400 py-2">
-          No sources yet — add one below or load the sample knowledge base.
-        </p>
+        <div className="rounded-lg border-2 border-dashed border-emerald-200 bg-emerald-50 p-5 text-center space-y-3">
+          <p className="text-sm font-medium text-emerald-900">No sources in the knowledge base yet</p>
+          <p className="text-xs text-emerald-700">
+            Load sample data to see cited answers, trust gating, and tamper-evident receipts in action.
+          </p>
+          <button
+            className="rounded-md bg-emerald-600 px-4 py-2 text-sm text-white font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50"
+            onClick={handleSeedDemo}
+            disabled={seeding}
+          >
+            {seeding ? "Loading…" : "Load sample knowledge base →"}
+          </button>
+        </div>
       )}
 
       {sources.length > 0 && (
