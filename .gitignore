@@ -33,3 +33,5 @@ next-env.d.ts
 
 # Drizzle generated migrations (keep schema, ignore generated files optionally)
 # drizzle/migrations/
+.vercel
+.env*
