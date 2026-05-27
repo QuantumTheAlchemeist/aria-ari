@@ -1,0 +1,26 @@
+{
+  "id": "receipts",
+  "name": "Receipts",
+  "description": "Makes ARI's AI verifiable — every answer is cited, every action is gated, every interaction is a tamper-evident receipt.",
+  "version": "1.0.0",
+  "author": "CropMind / ARI.HACK",
+  "sidebar": {
+    "label": "Receipts",
+    "icon": "receipt",
+    "href": "/receipts",
+    "order": 10
+  },
+  "dashboard": {
+    "widget": {
+      "component": "DashboardWidget",
+      "width": 1
+    }
+  },
+  "api": {
+    "base": "/api/receipts"
+  },
+  "database": {
+    "tables": ["receipts_sources", "receipts_ledger"],
+    "uninstall": "database/uninstall.sql"
+  }
+}
