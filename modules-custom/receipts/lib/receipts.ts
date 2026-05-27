@@ -58,12 +58,21 @@ export interface VerifyResult {
   reason?: string;
 }
 
+const VALID_KINDS = new Set<string>(["answer", "refusal", "action", "trust"]);
+
 /** Recompute the whole chain. Catches in-place content edits, reseal-less
  *  tampering, and reorder/insert/remove. */
 export function verifyChain(receipts: Receipt[]): VerifyResult {
   const ordered = [...receipts].sort((a, b) => a.seq - b.seq);
   let prev = GENESIS_HASH;
-  for (const r of ordered) {
+  for (let i = 0; i < ordered.length; i++) {
+    const r = ordered[i];
+    if (r.seq !== i)
+      return {
+        ok: false,
+        brokenAtSeq: r.seq,
+        reason: `seq gap or jump detected (expected ${i}, got ${r.seq})`,
+      };
     if (r.prev_hash !== prev)
       return {
         ok: false,
@@ -130,10 +139,12 @@ export function fromRow(row: {
   outputHash: string;
   citationIds: string[] | null;
   decision: string | null;
-  createdAt: string | null;
+  createdAt: string;
   prevHash: string;
   receiptHash: string;
 }): Receipt {
+  if (!VALID_KINDS.has(row.kind))
+    throw new Error(`Unknown receipt kind from DB: "${row.kind}"`);
   return {
     seq: row.seq,
     kind: row.kind as ReceiptKind,
@@ -143,7 +154,7 @@ export function fromRow(row: {
     output_hash: row.outputHash,
     citation_ids: row.citationIds ?? [],
     decision: row.decision ?? null,
-    created_at: row.createdAt ?? "",
+    created_at: row.createdAt,
     prev_hash: row.prevHash,
     receipt_hash: row.receiptHash,
   };

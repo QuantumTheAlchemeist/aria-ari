@@ -16,7 +16,11 @@ export async function GET(req: NextRequest) {
       .orderBy(asc(receiptsLedger.seq));
 
     const receipts = rows.map(fromRow);
-    return NextResponse.json({ receipts, verify: verifyChain(receipts) });
+    const counts = receipts.reduce<Record<string, number>>((acc, r) => {
+      acc[r.kind] = (acc[r.kind] ?? 0) + 1;
+      return acc;
+    }, {});
+    return NextResponse.json({ receipts, verify: verifyChain(receipts), counts });
   } catch (err) {
     console.error("[aria/list]", err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });

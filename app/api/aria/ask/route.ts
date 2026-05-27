@@ -11,7 +11,7 @@ import {
   GENESIS_HASH,
 } from "@receipts/lib/receipts";
 
-const Body = z.object({ question: z.string().min(1) });
+const Body = z.object({ question: z.string().min(1).max(2000) });
 
 export async function POST(req: NextRequest) {
   try {

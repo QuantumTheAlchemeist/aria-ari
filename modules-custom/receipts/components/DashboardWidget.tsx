@@ -7,19 +7,31 @@ interface VerifyResult {
   brokenAtSeq?: number;
 }
 
+const KIND_ORDER = ["answer", "refusal", "trust", "action"] as const;
+
+function buildBreakdown(counts: Record<string, number>): string {
+  const parts = KIND_ORDER.filter((k) => (counts[k] ?? 0) > 0).map(
+    (k) => `${counts[k]} ${k}`
+  );
+  return parts.join(" · ");
+}
+
 export function DashboardWidget() {
   const [v, setV] = useState<VerifyResult | null>(null);
-  const [count, setCount] = useState<number | null>(null);
+  const [counts, setCounts] = useState<Record<string, number> | null>(null);
 
   useEffect(() => {
     fetch(`${API_BASE}/list`)
       .then((r) => r.json())
-      .then((d: { verify: VerifyResult; receipts: unknown[] }) => {
+      .then((d: { verify: VerifyResult; counts: Record<string, number> }) => {
         setV(d.verify);
-        setCount(d.receipts.length);
+        setCounts(d.counts);
       })
       .catch(() => {});
   }, []);
+
+  const breakdown =
+    counts !== null ? buildBreakdown(counts) : null;
 
   return (
     <a
@@ -38,9 +50,12 @@ export function DashboardWidget() {
             : `✗ Broken #${v.brokenAtSeq}`
           : "…"}
       </div>
-      {count !== null && (
-        <div className="mt-0.5 text-xs text-neutral-400">
-          {count} receipt{count !== 1 ? "s" : ""} in ledger
+      {breakdown !== null && breakdown.length > 0 && (
+        <div className="mt-0.5 text-xs text-neutral-400">{breakdown}</div>
+      )}
+      {v && !v.ok && (
+        <div className="mt-0.5 text-xs text-blue-500 underline">
+          Open verifier →
         </div>
       )}
       <div className="mt-1 text-xs text-neutral-500">

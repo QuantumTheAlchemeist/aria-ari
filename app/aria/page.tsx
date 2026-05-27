@@ -3,6 +3,7 @@ import { useState } from "react";
 import { AskPanel } from "@receipts/components/AskPanel";
 import { ModuleScanner } from "@receipts/components/ModuleScanner";
 import { TrustArchitect } from "@receipts/components/TrustArchitect";
+import { PolicySimulator } from "@receipts/components/PolicySimulator";
 import { DecisionCards } from "@receipts/components/DecisionCards";
 import { Ledger } from "@receipts/components/Ledger";
 import { type ModuleRiskScan } from "@receipts/lib/module-scan";
@@ -33,6 +34,7 @@ export default function AriaPage() {
       <AskPanel onReceipt={bump} />
       <ModuleScanner onUseScan={setScannedModule} />
       <TrustArchitect scannedModule={scannedModule} onReceipt={bump} />
+      <PolicySimulator scannedModule={scannedModule} />
       <DecisionCards onChange={bump} />
       <Ledger refreshKey={k} />
     </div>

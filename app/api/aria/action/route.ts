@@ -6,6 +6,7 @@ import { receiptsLedger } from "@receipts/database/schema";
 import {
   evaluateConsequence,
   verifyToken,
+  consumeToken,
 } from "@receipts/lib/consequence";
 import {
   buildContent,
@@ -60,6 +61,12 @@ export async function PUT(req: NextRequest) {
     if (!payload || payload.userId !== userId || payload.toolName !== toolName || payload.inputHash !== computedInputHash) {
       return NextResponse.json(
         { ok: false, error: "Invalid or expired approval token" },
+        { status: 400 }
+      );
+    }
+    if (!consumeToken(token, payload.exp)) {
+      return NextResponse.json(
+        { ok: false, error: "Token already used — submit a new approval" },
         { status: 400 }
       );
     }

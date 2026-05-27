@@ -16,7 +16,7 @@ export function CleoDiagram({ diagram }: { diagram: Diagram }) {
     <div className="rounded-md border bg-neutral-50 p-3">
       <div className="mb-2 text-xs font-semibold uppercase text-neutral-500">{diagram.title}</div>
       <div className="grid gap-2">
-        {diagram.layers.map((l: any) => (
+        {diagram.layers.map((l) => (
           <div key={l.name} className="grid grid-cols-[120px_1fr] gap-2 rounded border bg-white p-2 text-xs">
             <span className="font-semibold">{l.name}</span>
             <span>{l.role}</span>
@@ -30,7 +30,7 @@ export function CleoDiagram({ diagram }: { diagram: Diagram }) {
     <div className="rounded-md border bg-neutral-50 p-3">
       <div className="mb-2 text-xs font-semibold uppercase text-neutral-500">{diagram.title}</div>
       <div className="grid gap-2 sm:grid-cols-2">
-        {diagram.items.map((x: any) => (
+        {diagram.items.map((x) => (
           <div key={x.label} className="rounded border bg-white p-2 text-xs">
             <b>{x.label}</b>: {x.before} → {x.after}
           </div>

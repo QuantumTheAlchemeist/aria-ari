@@ -44,6 +44,7 @@ export function TrustArchitect({
   const [askAnswer, setAskAnswer] = useState("");
   const [policy, setPolicy] = useState("");
   const [sealing, setSealing] = useState(false);
+  const [sealError, setSealError] = useState("");
 
   useEffect(() => {
     if (!scannedModule) return;
@@ -73,17 +74,22 @@ export function TrustArchitect({
 
   async function seal() {
     setSealing(true);
+    setSealError("");
     try {
       const r = await fetch(`${API_BASE}/trust`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input),
       });
+      if (!r.ok) {
+        setSealError("Server error — policy was NOT sealed into the ledger.");
+        return;
+      }
       const data = await r.json();
       setPolicy(data.policy ?? buildFinalPolicy(input));
       onReceipt();
     } catch {
-      setPolicy(buildFinalPolicy(input));
+      setSealError("Network error — policy was NOT sealed into the ledger.");
     } finally {
       setSealing(false);
     }
@@ -218,9 +224,13 @@ export function TrustArchitect({
         )}
       </div>
 
-      {stageId === "final" && (
+      {sealError && (
+        <p className="text-xs text-red-600 bg-red-50 rounded p-2">{sealError}</p>
+      )}
+
+      {stageId === "final" && policy && (
         <pre className="whitespace-pre-wrap rounded-md border bg-neutral-50 p-3 text-xs text-neutral-800">
-          {policy || buildFinalPolicy(input)}
+          {policy}
         </pre>
       )}
     </div>

@@ -7,12 +7,14 @@ const RISK_STYLE: Record<string, string> = {
   low: "bg-emerald-50 border-emerald-300 text-emerald-800",
   medium: "bg-amber-50 border-amber-300 text-amber-800",
   high: "bg-red-50 border-red-300 text-red-800",
+  critical: "bg-red-100 border-red-500 text-red-900",
 };
 
 const RISK_BADGE: Record<string, string> = {
   low: "bg-emerald-100 text-emerald-800",
   medium: "bg-amber-100 text-amber-800",
   high: "bg-red-100 text-red-800",
+  critical: "bg-red-200 text-red-900",
 };
 
 const PERM_ICON: Record<string, string> = {
@@ -56,10 +58,10 @@ export function ModuleScanner({ onUseScan }: { onUseScan: (scan: ModuleRiskScan)
     }
   }
 
-  function loadPreset(manifest: unknown) {
+  async function loadPreset(manifest: unknown) {
     const text = JSON.stringify(manifest, null, 2);
     setJson(text);
-    runScan(text);
+    await runScan(text);
   }
 
   return (
@@ -121,6 +123,9 @@ export function ModuleScanner({ onUseScan }: { onUseScan: (scan: ModuleRiskScan)
             <span className={`rounded px-2 py-0.5 text-xs font-bold uppercase ${RISK_BADGE[scan.riskLevel]}`}>
               {scan.riskLevel} risk
             </span>
+            {"score" in scan && (
+              <span className="text-xs opacity-60 font-mono">score: {(scan as { score: number }).score}</span>
+            )}
             {scan.permissions.map((p) => (
               <span key={p} className="text-xs opacity-70">
                 {PERM_ICON[p] ?? "⚙"} {p}

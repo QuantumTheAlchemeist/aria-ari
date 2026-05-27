@@ -35,5 +35,5 @@ export const VINEYARD_DECISION = {
   decision: "refuse" as const,
   output:
     "Recommendation: do NOT auto-spray Block A. (1) Block A is certified organic — a spray order escalates to typed-confirmation, certification-risk tier. (2) The last disease scan is 9 days old (freshness check failed). (3) Forecast shows rain within 12h (drift/runoff risk). Safer plan: schedule a drone scan, create a scouting task for rows 4-6, and DRAFT (not send) a note to the field lead.",
-  citationIds: ["block-a-organic-cert", "scan-log", "weather-feed"],
+  citationIds: ["note-security", "note-roadmap", "note-standup"],
 };

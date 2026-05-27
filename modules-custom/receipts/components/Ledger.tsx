@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { API_BASE } from "../lib/api-base";
+import { ReceiptTimeline } from "./ReceiptTimeline";
 
 interface Receipt {
   seq: number;
@@ -31,6 +32,7 @@ const KIND_COLOR: Record<string, string> = {
 export function Ledger({ refreshKey }: { refreshKey: number }) {
   const [data, setData] = useState<ListResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [actionError, setActionError] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -47,17 +49,29 @@ export function Ledger({ refreshKey }: { refreshKey: number }) {
   }, [refreshKey, load]);
 
   const seed = async () => {
-    await fetch(`${API_BASE}/seed`, { method: "POST" });
-    load();
+    setActionError("");
+    try {
+      const r = await fetch(`${API_BASE}/seed`, { method: "POST" });
+      if (!r.ok) setActionError("Seed failed");
+      else load();
+    } catch {
+      setActionError("Network error during seed");
+    }
   };
 
   const tamper = async () => {
-    await fetch(`${API_BASE}/tamper`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ seq: 1 }),
-    });
-    load();
+    setActionError("");
+    try {
+      const r = await fetch(`${API_BASE}/tamper`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ seq: 1 }),
+      });
+      if (!r.ok) setActionError("Tamper failed");
+      else load();
+    } catch {
+      setActionError("Network error during tamper");
+    }
   };
 
   const verify = data?.verify;
@@ -93,6 +107,10 @@ export function Ledger({ refreshKey }: { refreshKey: number }) {
         </p>
       )}
 
+      {actionError && (
+        <p className="text-xs text-red-600 bg-red-50 rounded p-2">{actionError}</p>
+      )}
+
       <div className="flex gap-2 flex-wrap">
         <button
           className="rounded-md border px-3 py-1 text-xs font-medium hover:bg-neutral-50 transition-colors"
@@ -118,6 +136,10 @@ export function Ledger({ refreshKey }: { refreshKey: number }) {
         <p className="text-sm text-neutral-400 py-2">
           No receipts yet. Click &quot;Seed demo&quot; then ask a question.
         </p>
+      )}
+
+      {data?.receipts && data.receipts.length > 0 && (
+        <ReceiptTimeline receipts={data.receipts} brokenAtSeq={broken ?? -1} />
       )}
 
       <ul className="divide-y text-sm">

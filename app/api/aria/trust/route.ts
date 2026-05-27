@@ -7,19 +7,23 @@ import { buildContent, sealReceipt, toRow, GENESIS_HASH } from "@receipts/lib/re
 import { buildFinalPolicy } from "@receipts/lib/cleo";
 
 const Body = z.object({
-  moduleName: z.string().min(1).default("AI Workflow"),
+  moduleName: z.string().min(1).max(200).default("AI Workflow"),
   workflow: z.enum(["knowledge", "tasks", "email", "documents", "finance", "custom"]).default("knowledge"),
-  reads: z.array(z.string()).default([]),
-  actions: z.array(z.string()).default([]),
-  bottlenecks: z.array(z.string()).default([]),
-  owner: z.string().optional(),
+  reads: z.array(z.string().max(100)).default([]),
+  actions: z.array(z.string().max(100)).default([]),
+  bottlenecks: z.array(z.string().max(100)).default([]),
+  owner: z.string().max(200).optional(),
 });
 
 export async function POST(req: NextRequest) {
   try {
     const db = getDb();
     const userId = await getUserId(req);
-    const input = Body.parse(await req.json());
+    const parsed = Body.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    }
+    const input = parsed.data;
     const output = buildFinalPolicy(input);
 
     const ledger = await db

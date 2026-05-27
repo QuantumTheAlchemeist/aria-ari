@@ -1,5 +1,4 @@
 // DEMO-ONLY: intentionally corrupts a receipt to demonstrate tamper detection.
-// Remove or gate behind NODE_ENV before any production use.
 import { NextRequest, NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
@@ -11,6 +10,8 @@ const Body = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  if (process.env.NODE_ENV === "production")
+    return NextResponse.json({ error: "Not available" }, { status: 403 });
   try {
     const db = getDb();
     const userId = await getUserId(req);

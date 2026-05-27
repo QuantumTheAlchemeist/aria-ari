@@ -28,7 +28,7 @@ export function answerFromSources(
       citations: [],
     };
   }
-  const used = chunks.filter((c) => c.score >= MIN_SCORE * 0.6);
+  const used = chunks.filter((c) => c.score >= MIN_SCORE);
   const text = used
     .map(
       (c, i) =>
