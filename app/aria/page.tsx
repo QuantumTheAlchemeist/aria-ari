@@ -1,12 +1,15 @@
 "use client";
 import { useState } from "react";
 import { AskPanel } from "@receipts/components/AskPanel";
+import { ModuleScanner } from "@receipts/components/ModuleScanner";
 import { TrustArchitect } from "@receipts/components/TrustArchitect";
 import { DecisionCards } from "@receipts/components/DecisionCards";
 import { Ledger } from "@receipts/components/Ledger";
+import { type ModuleRiskScan } from "@receipts/lib/module-scan";
 
 export default function AriaPage() {
   const [k, setK] = useState(0);
+  const [scannedModule, setScannedModule] = useState<ModuleRiskScan | null>(null);
   const bump = () => setK((x) => x + 1);
 
   return (
@@ -28,7 +31,8 @@ export default function AriaPage() {
       </header>
 
       <AskPanel onReceipt={bump} />
-      <TrustArchitect onReceipt={bump} />
+      <ModuleScanner onUseScan={setScannedModule} />
+      <TrustArchitect scannedModule={scannedModule} onReceipt={bump} />
       <DecisionCards onChange={bump} />
       <Ledger refreshKey={k} />
     </div>

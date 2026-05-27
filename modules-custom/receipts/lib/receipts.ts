@@ -116,7 +116,7 @@ export function toRow(r: Receipt, userId: string) {
     citationIds: r.citation_ids,
     decision: r.decision,
     prevHash: r.prev_hash,
-    createdAt: new Date(r.created_at),
+    createdAt: r.created_at,
   };
 }
 
@@ -130,7 +130,7 @@ export function fromRow(row: {
   outputHash: string;
   citationIds: string[] | null;
   decision: string | null;
-  createdAt: Date | string | null;
+  createdAt: string | null;
   prevHash: string;
   receiptHash: string;
 }): Receipt {
@@ -143,10 +143,7 @@ export function fromRow(row: {
     output_hash: row.outputHash,
     citation_ids: row.citationIds ?? [],
     decision: row.decision ?? null,
-    created_at:
-      row.createdAt instanceof Date
-        ? row.createdAt.toISOString()
-        : String(row.createdAt ?? ""),
+    created_at: row.createdAt ?? "",
     prev_hash: row.prevHash,
     receipt_hash: row.receiptHash,
   };

@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { API_BASE } from "../lib/api-base";
 import {
   CLEO_STAGES,
@@ -9,6 +9,7 @@ import {
   type CleoStageId,
   type Workflow,
 } from "../lib/cleo";
+import { type ModuleRiskScan } from "../lib/module-scan";
 import { CleoDiagram } from "./CleoDiagram";
 
 const READS = ["notes", "tasks", "documents", "contacts", "calendar", "finance records"];
@@ -27,7 +28,13 @@ function stageCopy(stage: CleoStageId) {
   return "Seal the policy as a trust receipt. Any later policy change should create a new receipt.";
 }
 
-export function TrustArchitect({ onReceipt }: { onReceipt: () => void }) {
+export function TrustArchitect({
+  onReceipt,
+  scannedModule,
+}: {
+  onReceipt: () => void;
+  scannedModule?: ModuleRiskScan | null;
+}) {
   const [moduleName, setModuleName] = useState("Project Memory Copilot");
   const [workflow, setWorkflow] = useState<Workflow>("knowledge");
   const [reads, setReads] = useState<string[]>(["notes", "documents"]);
@@ -37,6 +44,16 @@ export function TrustArchitect({ onReceipt }: { onReceipt: () => void }) {
   const [askAnswer, setAskAnswer] = useState("");
   const [policy, setPolicy] = useState("");
   const [sealing, setSealing] = useState(false);
+
+  useEffect(() => {
+    if (!scannedModule) return;
+    setModuleName(scannedModule.moduleName);
+    if (scannedModule.suggestedReads.length > 0) setReads(scannedModule.suggestedReads);
+    if (scannedModule.suggestedActions.length > 0) setActions(scannedModule.suggestedActions);
+    if (scannedModule.suggestedBottlenecks.length > 0) setBottlenecks(scannedModule.suggestedBottlenecks);
+    setStageId("overview");
+    setAskAnswer("");
+  }, [scannedModule]);
 
   const input = useMemo(
     () => ({ moduleName, workflow, reads, actions, bottlenecks, owner: "ARI user" }),

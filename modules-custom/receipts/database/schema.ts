@@ -27,5 +27,6 @@ export const receiptsLedger = pgTable("receipts_ledger", {
   citationIds: jsonb("citation_ids").$type<string[]>().notNull(),
   decision: text("decision"),
   prevHash: text("prev_hash").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  // stored as ISO-8601 text so the exact string used when sealing is preserved
+  createdAt: text("created_at").notNull(),
 });
