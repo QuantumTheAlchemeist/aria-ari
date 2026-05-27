@@ -37,10 +37,9 @@ Step 5 — Ask grounded and ungrounded questions
     → ✗ Refusal (not in knowledge base — no hallucination)
 
 Step 6 — Prove tamper-evidence
-  → In "Receipt Ledger", verify the chain shows ✓ Verified
-  → Click "Simulate edit →" under Integrity Proof
-    → Chain breaks; exact tampered row is flagged red
-  → Click "Restore chain →"  →  chain heals back to ✓ Verified
+  → In "ARIA Ledger", verify the chain shows ✓ Verified
+  → Click "Tamper (demo)" → chain breaks; tampered row is flagged red
+  → Click "Seed demo"     → chain heals back to ✓ Verified
 ```
 
 ## 90-second local review path
