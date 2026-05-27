@@ -1,6 +1,6 @@
 import { canonicalJson, sha256Hex } from "./hash";
 
-export type ReceiptKind = "answer" | "refusal" | "action";
+export type ReceiptKind = "answer" | "refusal" | "action" | "trust";
 export const GENESIS_HASH = "0".repeat(64);
 
 export interface ReceiptContent {
@@ -101,7 +101,8 @@ export function verifyChain(receipts: Receipt[]): VerifyResult {
   return { ok: true };
 }
 
-/** Map a sealed Receipt to a DB row (Drizzle column keys). */
+/** Map a sealed Receipt to a DB row (Drizzle column keys).
+ *  createdAt is stored explicitly so verifyChain can recompute the same hash. */
 export function toRow(r: Receipt, userId: string) {
   return {
     receiptHash: r.receipt_hash,
@@ -115,6 +116,7 @@ export function toRow(r: Receipt, userId: string) {
     citationIds: r.citation_ids,
     decision: r.decision,
     prevHash: r.prev_hash,
+    createdAt: new Date(r.created_at),
   };
 }
 
