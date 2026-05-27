@@ -1,3 +1,5 @@
+// DEMO-ONLY: intentionally corrupts a receipt to demonstrate tamper detection.
+// Remove or gate behind NODE_ENV before any production use.
 import { NextRequest, NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";

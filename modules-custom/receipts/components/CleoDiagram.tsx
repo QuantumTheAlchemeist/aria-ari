@@ -1,6 +1,15 @@
 "use client";
 
-export function CleoDiagram({ diagram }: { diagram: any }) {
+type StackLayer = { name: string; role: string; primitive: string };
+type ImpactItem = { label: string; before: string; after: string };
+type Diagram =
+  | { kind: "stack"; title: string; layers: StackLayer[] }
+  | { kind: "step"; title: string; input: string; node: { name: string; primitive: string }; output: string; note: string }
+  | { kind: "impact"; title: string; items: ImpactItem[] }
+  | { kind: "policy"; title: string; status: string; receiptKind: string }
+  | null;
+
+export function CleoDiagram({ diagram }: { diagram: Diagram }) {
   if (!diagram) return null;
 
   if (diagram.kind === "stack") return (
@@ -39,15 +48,16 @@ export function CleoDiagram({ diagram }: { diagram: any }) {
     </div>
   );
 
+  // "step" — data, actions, approval, ledger stages
   return (
     <div className="rounded-md border bg-neutral-50 p-3 text-xs">
       <div className="font-semibold">{diagram.title}</div>
       <div className="mt-2 flex items-center gap-2 flex-wrap">
         <span className="rounded border bg-white px-2 py-1">{diagram.input}</span>
         <span>→</span>
-        <span className="rounded border bg-white px-2 py-1">{diagram.node?.name ?? diagram.status}</span>
+        <span className="rounded border bg-white px-2 py-1">{diagram.node.name}</span>
         <span>→</span>
-        <span className="rounded border bg-white px-2 py-1">{diagram.output ?? diagram.receiptKind}</span>
+        <span className="rounded border bg-white px-2 py-1">{diagram.output}</span>
       </div>
       {diagram.note && <div className="mt-2 text-neutral-500">{diagram.note}</div>}
     </div>

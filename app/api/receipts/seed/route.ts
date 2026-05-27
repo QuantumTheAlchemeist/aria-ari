@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const r0 = sealReceipt(
       buildContent({
         seq: 0,
-        kind: "action",
+        kind: "refusal",
         prompt: VINEYARD_DECISION.prompt,
         output: VINEYARD_DECISION.output,
         citation_ids: VINEYARD_DECISION.citationIds,

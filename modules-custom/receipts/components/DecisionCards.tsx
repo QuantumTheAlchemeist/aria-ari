@@ -56,6 +56,7 @@ interface DecisionState {
 export function DecisionCards({ onChange }: { onChange: () => void }) {
   const [d, setD] = useState<DecisionState | null>(null);
   const [approving, setApproving] = useState(false);
+  const [approveError, setApproveError] = useState("");
 
   async function propose(body: DemoAction["body"]) {
     const r = await fetch(`${API_BASE}/action`, {
@@ -70,8 +71,9 @@ export function DecisionCards({ onChange }: { onChange: () => void }) {
   async function approve() {
     if (!d?.confirmationToken) return;
     setApproving(true);
+    setApproveError("");
     try {
-      await fetch(`${API_BASE}/action`, {
+      const r = await fetch(`${API_BASE}/action`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -80,8 +82,15 @@ export function DecisionCards({ onChange }: { onChange: () => void }) {
           token: d.confirmationToken,
         }),
       });
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({ error: "Approval failed" }));
+        setApproveError(err.error ?? "Approval failed");
+        return;
+      }
       setD(null);
       onChange();
+    } catch {
+      setApproveError("Network error — approval not sent");
     } finally {
       setApproving(false);
     }
@@ -121,13 +130,18 @@ export function DecisionCards({ onChange }: { onChange: () => void }) {
           <p className="font-medium">{d.preview}</p>
           <p className="opacity-80 text-xs">{d.reason}</p>
           {d.decision === "draft" && d.confirmationToken && (
-            <button
-              className="mt-2 rounded-md bg-amber-600 px-3 py-1.5 text-xs text-white font-medium disabled:opacity-50 hover:bg-amber-700 transition-colors"
-              onClick={approve}
-              disabled={approving}
-            >
-              {approving ? "Sealing…" : "Approve & seal receipt"}
-            </button>
+            <>
+              <button
+                className="mt-2 rounded-md bg-amber-600 px-3 py-1.5 text-xs text-white font-medium disabled:opacity-50 hover:bg-amber-700 transition-colors"
+                onClick={approve}
+                disabled={approving}
+              >
+                {approving ? "Sealing…" : "Approve & seal receipt"}
+              </button>
+              {approveError && (
+                <p className="mt-1 text-xs text-red-700">{approveError}</p>
+              )}
+            </>
           )}
           {d.decision === "act" && (
             <p className="text-xs opacity-60 italic">

@@ -12,7 +12,7 @@ export const receiptsSources = pgTable("receipts_sources", {
   userId: uuid("user_id").notNull(),
   title: text("title").notNull(),
   body: text("body").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
 export const receiptsLedger = pgTable("receipts_ledger", {
@@ -27,5 +27,5 @@ export const receiptsLedger = pgTable("receipts_ledger", {
   citationIds: jsonb("citation_ids").$type<string[]>().notNull(),
   decision: text("decision"),
   prevHash: text("prev_hash").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });

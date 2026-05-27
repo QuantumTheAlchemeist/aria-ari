@@ -40,6 +40,27 @@ describe("consequence engine", () => {
     ).toBe("refuse");
   });
 
+  it("drafts at the ceiling (n=50) and refuses just above it (n=51)", () => {
+    expect(
+      evaluateConsequence({
+        toolName: "delete_notes",
+        toolInput: { count: 50 },
+        userId: "u",
+        affectedCount: 50,
+        irreversible: true,
+      }).decision
+    ).toBe("draft");
+    expect(
+      evaluateConsequence({
+        toolName: "delete_notes",
+        toolInput: { count: 51 },
+        userId: "u",
+        affectedCount: 51,
+        irreversible: true,
+      }).decision
+    ).toBe("refuse");
+  });
+
   it("round-trips a valid token, rejects a tampered one", () => {
     const t = issueToken({
       inputHash: "h",

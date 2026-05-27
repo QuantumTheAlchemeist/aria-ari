@@ -13,6 +13,7 @@ import {
   toRow,
   GENESIS_HASH,
 } from "@receipts/lib/receipts";
+import { canonicalJson, sha256Hex } from "@receipts/lib/hash";
 
 const Propose = z.object({
   toolName: z.string(),
@@ -55,7 +56,8 @@ export async function PUT(req: NextRequest) {
     const { toolName, toolInput, token } = parsed.data;
 
     const payload = verifyToken(token);
-    if (!payload || payload.userId !== userId || payload.toolName !== toolName) {
+    const computedInputHash = sha256Hex(canonicalJson(toolInput as Record<string, unknown>));
+    if (!payload || payload.userId !== userId || payload.toolName !== toolName || payload.inputHash !== computedInputHash) {
       return NextResponse.json(
         { ok: false, error: "Invalid or expired approval token" },
         { status: 400 }
