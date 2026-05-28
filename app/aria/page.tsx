@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { AskPanel } from "@receipts/components/AskPanel";
 import { ModuleScanner } from "@receipts/components/ModuleScanner";
+import { SourcesPanel } from "@receipts/components/SourcesPanel";
 import { TrustArchitect } from "@receipts/components/TrustArchitect";
 import { PolicySimulator } from "@receipts/components/PolicySimulator";
 import { DecisionCards } from "@receipts/components/DecisionCards";
@@ -95,6 +96,7 @@ export default function AriaPage() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 items-start">
           {/* Left column */}
           <div className="space-y-6">
+            <SourcesPanel />
             <AskPanel onReceipt={bump} />
             <ModuleScanner onUseScan={setScannedModule} />
           </div>
