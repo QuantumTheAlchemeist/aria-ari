@@ -22,10 +22,15 @@ export async function POST(req: NextRequest) {
       .delete(receiptsSources)
       .where(eq(receiptsSources.userId, userId));
 
+    // Prefix IDs with a user-specific token so multiple users can each seed
+    // their own copy without hitting the global primary key constraint.
+    const prefix = userId.replace(/-/g, "").slice(0, 8);
+    const scopedId = (id: string) => `${prefix}-${id}`;
+
     for (const s of SOURCES) {
       await db
         .insert(receiptsSources)
-        .values({ id: s.id, userId, title: s.title, body: s.text });
+        .values({ id: scopedId(s.id), userId, title: s.title, body: s.text });
     }
 
     const r0 = sealReceipt(
@@ -34,7 +39,7 @@ export async function POST(req: NextRequest) {
         kind: "refusal",
         prompt: VINEYARD_DECISION.prompt,
         output: VINEYARD_DECISION.output,
-        citation_ids: VINEYARD_DECISION.citationIds,
+        citation_ids: VINEYARD_DECISION.citationIds.map(scopedId),
         decision: VINEYARD_DECISION.decision,
         created_at: new Date().toISOString(),
       }),
